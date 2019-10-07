@@ -1,43 +1,144 @@
+import ParametersForTests.ParametersForAutorisation;
 import io.restassured.http.Headers;
+import io.restassured.internal.path.xml.NodeImpl;
+import io.restassured.path.xml.XmlPath;
 import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
 import static java.util.Objects.isNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
+import junit.framework.Assert;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+/**
+ * Не сделано толком логирование и не исправлены тестовые сообщения
+ */
 public class API_ARM {
+    //protected static Logger logger = LogManager.getLogger(API_ARM.class.getName());
+    //logger.log(Level.WARNING);
+
     private static final String BASE_URI = "http://213.128.208.33:8080";
+    //public String SESSION_ID; // выносить в глобальную переменную не стоит - будут проблемы при распараллеливании
 
     /**
      * Получение ID сессии (аутентификация)
      */
-    @Test
-    public void test_GetSessionID(){
-        Map<String, Object> paramsReqMap = new HashMap<>();
-        paramsReqMap.put("success", "/share/page/");
-        paramsReqMap.put("failure", "/share/page/?error=true");
-        paramsReqMap.put("username", "proninin");
-        paramsReqMap.put("password", "12345");
-
+    public String getSessionID(Map<String, Object> paramsReqMap){
+        String sessionID = null;
         Response response = null;
         try {
             response =
                     given()
                             .params(paramsReqMap)
-                    .post(BASE_URI)
+                    .when()
+                        .post(BASE_URI)
                     .then().statusCode(200).extract().response();
         } catch(java.lang.AssertionError e){
-            System.out.println("Autorisation: "+ e.getMessage());
+            System.out.println("Authorization: "+ e.getMessage());
         }
 
         if (isNull(response)) {
-            System.out.println("Response is null, sessionId not found ");
+            System.out.println("Response is null, sessionId not found");
+            return null;
+        }
+        sessionID = response.getSessionId();
+        System.out.println(sessionID);
+        return sessionID;
+     }
+
+    /**
+     * Проверка, что при валидных данных возвращается sessionID
+     */
+    @Test(enabled = false)
+    public void test_checkGetSessionID(){
+        String sessionID = getSessionID(ParametersForAutorisation.getValidParametersForAuthorization());
+        Assert.assertFalse("SessionID not found", sessionID.isEmpty());
+
+        //+ добавить выход - создать группу в которой нужен AfterTest
+    }
+
+    /**
+     * Проверка формы авторизации (в сценарии также требуется проверка эламентов - не реализовано)
+     * Можно отключать - он будет совпадать с тестом test_checkAuthorizationWithValidParam
+     * или test_checkAuthorizationWithInvalidParam
+     */
+    @Test(enabled = false)
+    public void test_checkAuthorizationWindowItems() {
+        String sessionID = getSessionID(ParametersForAutorisation.getInvalidParametersForAuthorization());
+        if (isNull(sessionID)) {
+            System.out.println("SessionID is null, no autorisation");
+            //return;
+        }
+    }
+
+    /**
+     * Проверка авторизации с правильными параметрами входа
+     */
+    @Test(enabled = true)
+    public void test_checkAuthorizationWithValidParam(){
+        String sessionID = getSessionID(ParametersForAutorisation.getValidParametersForAuthorization());
+        if(isNull(sessionID)) {
+            System.out.println("SessionID is null, no autorisation");
             return;
         }
-        String sessionId = response.getSessionId();
-        System.out.println(sessionId);
-     }
+
+        Response responsePage = null;
+        try {
+            responsePage =
+                    given().baseUri(BASE_URI)
+                        .sessionId(sessionID)
+                        .params(ParametersForAutorisation.getArmCodeForAuthorization())
+                    .when()
+                        .get("/share/page/")
+                    .then().statusCode(200).extract().response();
+        } catch(java.lang.AssertionError e){
+            System.out.println("Authorization: "+ e.getMessage());
+        }
+
+        //if (isNull(responsePage))...
+        XmlPath xmlPathPage = new XmlPath(XmlPath.CompatibilityMode.HTML, responsePage.asString());
+        String xmlPathPageStr = xmlPathPage.getString("html.head.title");
+        System.out.println("--------------------" + xmlPathPageStr + "-------------") ;
+
+        //-----------------------
+        Map<String, Object> params = ParametersForAutorisation.getArmCodeForAuthorization();
+        Response responseArmCode = null;
+        try {
+            responseArmCode =
+                    given().baseUri(BASE_URI)
+                            .sessionId(sessionID)
+                            .params(ParametersForAutorisation.getArmCodeForAuthorization())
+                            .when()
+                            .get("/share/page/arm")
+                            .then().statusCode(200).extract().response();
+        } catch(java.lang.AssertionError e){
+            System.out.println("Authorization: "+ e.getMessage());
+        }
+        //Приходит ответ в виде
+        XmlPath xmlPath = new XmlPath(XmlPath.CompatibilityMode.HTML, responseArmCode.asString());
+        String v = xmlPath.getString("html.head.title");
+        System.out.println("--------------------" + v + "-------------") ;
+
+    }
+
+    /**
+     * Проверка авторизации со неправильными параметрами входа
+     * Возможно, тест не нужен - при неправильных данных сессию не получим
+     */
+    @Test(enabled = false)
+    public void test_checkAuthorizationWithInvalidParam(){
+        String sessionID = getSessionID(ParametersForAutorisation.getValidParametersForAuthorization());
+        if(isNull(sessionID)) {
+            System.out.println("SessionID is null, no authorization");
+            return;
+        }
+    }
 }
