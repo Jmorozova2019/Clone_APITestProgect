@@ -70,19 +70,43 @@ public class API_ARM {
      * Можно отключать - он будет совпадать с тестом test_checkAuthorizationWithValidParam
      * или test_checkAuthorizationWithInvalidParam
      */
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void test_checkAuthorizationWindowItems() {
-        String sessionID = getSessionID(ParametersForAutorisation.getInvalidParametersForAuthorization());
+        String sessionID = getSessionID(ParametersForAutorisation.getValidParametersForAuthorization());
         if (isNull(sessionID)) {
             System.out.println("SessionID is null, no autorisation");
-            //return;
+            return;
         }
+
+        Response responsePage = null;
+        try {
+            responsePage =
+                    given().baseUri(BASE_URI)
+                            .sessionId(sessionID)
+                            //.params(ParametersForAutorisation.getArmCodeForAuthorization())
+                    .when()
+                            .get("/share/page/")
+                    .then().statusCode(200).extract().response();
+        } catch(java.lang.AssertionError e){
+            System.out.println("Authorization: "+ e.getMessage());
+        }
+
+        XmlPath xmlPathPage = new XmlPath(XmlPath.CompatibilityMode.HTML, responsePage.asString());
+        //xmlPathPage.getString("html.body.div[3].div.form.div[1].input");//Поле ввода Имя пользователя - нужно проверить на содержимое пока непонятно как
+        String lblUserName = xmlPathPage.getString("html.body.div[3].div.form.div[1].label");//лейбл Имя пользователя
+        Assert.assertTrue("Ожидаемое название поля Имя пользователя, получено " + lblUserName, lblUserName.equals("Имя пользователя"));
+
+        String lblPassword = xmlPathPage.getString("/html/body/div[3]/div/form/div[2]/label");//лейбл Пароль
+        Assert.assertTrue("Ожидаемое название поля Пароль, получено " + lblPassword, lblPassword.equals("Пароль"));
+
+        String btnEnter = xmlPathPage.getString("html.body.div[3].div.form.div[3].span.span.button");//лейбл Пароль
+        Assert.assertTrue("Ожидаемое название кнопки Войти, получено " + btnEnter, btnEnter.equals("Пароль"));
     }
 
     /**
      * Проверка авторизации с правильными параметрами входа
      */
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void test_checkAuthorizationWithValidParam(){
         String sessionID = getSessionID(ParametersForAutorisation.getValidParametersForAuthorization());
         if(isNull(sessionID)) {
@@ -90,7 +114,7 @@ public class API_ARM {
             return;
         }
 
-        Response responsePage = null;
+       Response responsePage = null;
         try {
             responsePage =
                     given().baseUri(BASE_URI)
