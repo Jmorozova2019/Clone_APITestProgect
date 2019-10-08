@@ -1,5 +1,6 @@
 import ParametersForTests.ParametersForAutorisation;
 import io.restassured.http.Headers;
+import io.restassured.internal.path.xml.NodeChildrenImpl;
 import io.restassured.internal.path.xml.NodeImpl;
 import io.restassured.path.xml.XmlPath;
 import io.restassured.response.Response;
@@ -25,24 +26,26 @@ public class API_ARM {
     //protected static Logger logger = LogManager.getLogger(API_ARM.class.getName());
     //logger.log(Level.WARNING);
 
-    private static final String BASE_URI = "http://213.128.208.33:8080";
-    //public String SESSION_ID; // выносить в глобальную переменную не стоит - будут проблемы при распараллеливании
+    public static final String BASE_URI = "http://213.128.208.33:8080";
+
+    ///*****************************************************************************************************************
+    // Начало Блока переиспользуемых функций
+    //******************************************************************************************************************
 
     /**
-     * Получение ID сессии (аутентификация)
+     * Получение ID сессии
      */
-    public String getSessionID(Map<String, Object> paramsReqMap){
+    public static String getSessionID(){
         String sessionID = null;
         Response response = null;
         try {
             response =
-                    given()
-                            .params(paramsReqMap)
-                    .when()
-                        .post(BASE_URI)
+                    given().baseUri(BASE_URI)
+                            .when()
+                    .get()
                     .then().statusCode(200).extract().response();
         } catch(java.lang.AssertionError e){
-            System.out.println("Authorization: "+ e.getMessage());
+            System.out.println("Getting session: "+ e.getMessage());
         }
 
         if (isNull(response)) {
@@ -52,14 +55,38 @@ public class API_ARM {
         sessionID = response.getSessionId();
         System.out.println(sessionID);
         return sessionID;
-     }
+    }
 
     /**
-     * Проверка, что при валидных данных возвращается sessionID
+     * Авторизация  /share/page/
+     */
+    public static Response authorization(String sessionID, Map<String, String> paramsForAuthorisation) {
+        Response response = null;
+        try {
+            response =
+                    given().baseUri(BASE_URI)
+                            .sessionId(sessionID)
+                            .params(paramsForAuthorisation)
+                    .when()
+                            //.get("/share/page/")
+                            .post("/share/page/dologin")
+                    .then().extract().response();//statusCode(200).
+        } catch (java.lang.AssertionError e) {
+            System.out.println("Authorization: " + e.getMessage());
+            return null;
+        }
+        return response;
+    }
+
+    //*****************************************************************************************************************
+    // Конец Блока переиспользуемых функций
+    //******************************************************************************************************************
+    /**
+     * Проверка, что возвращается sessionID (никаких данных для этого не нужно - только путь)
      */
     @Test(enabled = false)
     public void test_checkGetSessionID(){
-        String sessionID = getSessionID(ParametersForAutorisation.getValidParametersForAuthorization());
+        String sessionID = getSessionID();
         Assert.assertFalse("SessionID not found", sessionID.isEmpty());
 
         //+ добавить выход - создать группу в которой нужен AfterTest
@@ -72,9 +99,9 @@ public class API_ARM {
      */
     @Test(enabled = true)
     public void test_checkAuthorizationWindowItems() {
-        String sessionID = getSessionID(ParametersForAutorisation.getValidParametersForAuthorization());
+        String sessionID = getSessionID();
         if (isNull(sessionID)) {
-            System.out.println("SessionID is null, no autorisation");
+            System.out.println("SessionID is null, no authorization");
             return;
         }
 
@@ -91,16 +118,29 @@ public class API_ARM {
             System.out.println("Authorization: "+ e.getMessage());
         }
 
+        //НЕ ОТЛАЖЕНО
         XmlPath xmlPathPage = new XmlPath(XmlPath.CompatibilityMode.HTML, responsePage.asString());
         //xmlPathPage.getString("html.body.div[3].div.form.div[1].input");//Поле ввода Имя пользователя - нужно проверить на содержимое пока непонятно как
-        String lblUserName = xmlPathPage.getString("html.body.div[3].div.form.div[1].label");//лейбл Имя пользователя
+
+        System.out.println("---------------------------");
+        String xmlPathToItem = "html.body.div[3]";//html.body.div[3].div.form.div[1].label
+        System.out.println("---------------------------");
+        if (xmlPathPage.get(xmlPathToItem) instanceof NodeChildrenImpl) {
+            if (((NodeChildrenImpl) xmlPathPage.get(xmlPathToItem)).size() == 0) {
+                System.out.println("+++++++++++++++++");
+            }
+        }
+
+        System.out.println(xmlPathPage.get(xmlPathToItem).toString());
+
+        /*String lblUserName = xmlPathPage.getString(xmlPathToItem + ".text()");//лейбл Имя пользователя
         Assert.assertTrue("Ожидаемое название поля Имя пользователя, получено " + lblUserName, lblUserName.equals("Имя пользователя"));
 
-        String lblPassword = xmlPathPage.getString("/html/body/div[3]/div/form/div[2]/label");//лейбл Пароль
+        String lblPassword = xmlPathPage.getString("/html/body/div[3]/div/form/div[2]/label/text()[1]");//лейбл Пароль
         Assert.assertTrue("Ожидаемое название поля Пароль, получено " + lblPassword, lblPassword.equals("Пароль"));
 
-        String btnEnter = xmlPathPage.getString("html.body.div[3].div.form.div[3].span.span.button");//лейбл Пароль
-        Assert.assertTrue("Ожидаемое название кнопки Войти, получено " + btnEnter, btnEnter.equals("Пароль"));
+        String btnEnter = xmlPathPage.getString("html/body/div[3]/div/form/div[3]/span/span/button/text()");//лейбл Пароль
+        Assert.assertTrue("Ожидаемое название кнопки Войти, получено " + btnEnter, btnEnter.equals("Пароль"));*/
     }
 
     /**
@@ -108,32 +148,20 @@ public class API_ARM {
      */
     @Test(enabled = false)
     public void test_checkAuthorizationWithValidParam(){
-        String sessionID = getSessionID(ParametersForAutorisation.getValidParametersForAuthorization());
+        String sessionID = getSessionID();
         if(isNull(sessionID)) {
             System.out.println("SessionID is null, no autorisation");
             return;
         }
 
-       Response responsePage = null;
-        try {
-            responsePage =
-                    given().baseUri(BASE_URI)
-                        .sessionId(sessionID)
-                        .params(ParametersForAutorisation.getArmCodeForAuthorization())
-                    .when()
-                        .get("/share/page/")
-                    .then().statusCode(200).extract().response();
-        } catch(java.lang.AssertionError e){
-            System.out.println("Authorization: "+ e.getMessage());
-        }
-
+        Response responsePage = authorization(sessionID, ParametersForAutorisation.getValidParametersForAuthorization());
         //if (isNull(responsePage))...
         XmlPath xmlPathPage = new XmlPath(XmlPath.CompatibilityMode.HTML, responsePage.asString());
         String xmlPathPageStr = xmlPathPage.getString("html.head.title");
         System.out.println("--------------------" + xmlPathPageStr + "-------------") ;
 
         //-----------------------
-        Map<String, Object> params = ParametersForAutorisation.getArmCodeForAuthorization();
+        /*Map<String, Object> params = ParametersForAutorisation.getArmCodeForAuthorization();
         Response responseArmCode = null;
         try {
             responseArmCode =
@@ -150,7 +178,7 @@ public class API_ARM {
         XmlPath xmlPath = new XmlPath(XmlPath.CompatibilityMode.HTML, responseArmCode.asString());
         String v = xmlPath.getString("html.head.title");
         System.out.println("--------------------" + v + "-------------") ;
-
+        */
     }
 
     /**
@@ -159,7 +187,7 @@ public class API_ARM {
      */
     @Test(enabled = false)
     public void test_checkAuthorizationWithInvalidParam(){
-        String sessionID = getSessionID(ParametersForAutorisation.getValidParametersForAuthorization());
+        String sessionID = getSessionID();
         if(isNull(sessionID)) {
             System.out.println("SessionID is null, no authorization");
             return;

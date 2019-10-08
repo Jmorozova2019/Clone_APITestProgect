@@ -3,21 +3,20 @@ package ParametersForTests;
 import java.util.HashMap;
 import java.util.Map;
 
-public  class ParametersForAutorisation {
+public class ParametersForAutorisation {
 
-    public static Map<String, Object>  getValidParametersForAuthorization() {
-        Map<String, Object> params =  new HashMap<>();
-        params.put("success", "/share/page/");//можно вынести
-        params.put("failure", "/share/page/?error=true");//можно вынести
+    public static Map<String, String> getValidParametersForAuthorization() {
+        Map<String, String> params = new HashMap<>();
+        params.put("success", "/share/page/");
+        params.put("failure", "/share/page/?error=true");
         params.put("username", "proninin");
         params.put("password", "12345");
 
         return params;
     }
 
-
-    public static Map<String, Object> getInvalidParametersForAuthorization() {
-        Map<String, Object> params =  new HashMap<>();
+    public static Map<String, String> getInvalidParametersForAuthorization() {
+        Map<String, String> params =  new HashMap<>();
         params.put("success", "/share/page/");
         params.put("failure", "/share/page/?error=true");
         params.put("username", "roninin");//можно заменить случайно сгенеренной строкой
@@ -26,8 +25,8 @@ public  class ParametersForAutorisation {
         return params;
     }
 
-    public static  Map<String, Object> getArmCodeForAuthorization() {
-        Map<String, Object> params =  new HashMap<>();
+    public static  Map<String, String> getArmCodeForAuthorization() {
+        Map<String, String> params =  new HashMap<>();
         params.put("code", "SED");
 
         return params;

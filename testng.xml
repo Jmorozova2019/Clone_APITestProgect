@@ -3,7 +3,8 @@
 <suite name="TestsSuiteAutorisation" verbose="5">
     <test name="TestAutorisation">
         <classes>
-            <class name="API_ARM"/>
+            <!--<class name="API_ARM"/>-->
+            <class name="DocumentsType"/>
         </classes>
     </test>
 </suite>
