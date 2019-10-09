@@ -1,23 +1,13 @@
-import ParametersForTests.ParametersForAutorisation;
-import io.restassured.http.Headers;
+import java.util.Map;
+import static java.util.Objects.isNull;
 import io.restassured.internal.path.xml.NodeChildrenImpl;
-import io.restassured.internal.path.xml.NodeImpl;
 import io.restassured.path.xml.XmlPath;
 import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
-import static java.util.Objects.isNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-
-import junit.framework.Assert;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import org.testng.Assert;
+import ParametersForTests.ParametersForAutorisation;
 
 /**
  * Не сделано толком логирование и не исправлены тестовые сообщения
@@ -87,7 +77,7 @@ public class API_ARM {
     @Test(enabled = false)
     public void test_checkGetSessionID(){
         String sessionID = getSessionID();
-        Assert.assertFalse("SessionID not found", sessionID.isEmpty());
+        Assert.assertFalse(sessionID.isEmpty(), "SessionID not found");
 
         //+ добавить выход - создать группу в которой нужен AfterTest
     }

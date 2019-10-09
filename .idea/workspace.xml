@@ -2,17 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4b25e331-a6a0-421b-9094-712b92e95b41" name="Default Changelist" comment="Параметры для тестов вынесены в отдельный класс, начаты скрипты по авторизации">
-      <change afterPath="$PROJECT_DIR$/src/test/java/ClassesPOJO/DictionaryTree.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/ClassesPOJO/DictionaryTreeItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/ClassesPOJO/DictionaryTypeData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/DocumentsType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/ParametersForTests/ParametersForDocumentsTypes.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/ClassesPOJO/DocumentTypeItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/ClassesPOJO/DocumentTypeListData.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/API_ARM.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/API_ARM.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ParametersForTests/ParametersForAutorisation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ParametersForTests/ParametersForAutorisation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ClassesPOJO/DictionaryTreeItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ClassesPOJO/DocumentTypeTreeItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ClassesPOJO/DictionaryTypeData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ClassesPOJO/DocumentTypeData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/DocumentsType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/DocumentsType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ParametersForTests/ParametersForDocumentsTypes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ParametersForTests/ParametersForDocumentsTypes.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/test-classes/API_ARM.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/API_ARM.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testng.xml" beforeDir="false" afterPath="$PROJECT_DIR$/testng.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -124,7 +123,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570523912720</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Методы получения первой SessionID и авторизации вынесены в отдельный блок&#10;Созданы POJO-классы для упрощения десериализации, добавлена зависимость gson&#10;Метод получения списка типов документов test_getDocumentType() в работе">
+      <created>1570553586023</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1570553586023</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -146,25 +152,26 @@
     <MESSAGE value="Rename method testAutorisation() to test_GetSessionID(), delete unused rows" />
     <MESSAGE value="Параметры для тестов вынесены в отдельный класс, начаты скрипты по авторизации" />
     <MESSAGE value="Примерная реализация проверки формы авторизации test_checkAuthorizationWindowItems (не отлажено)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Примерная реализация проверки формы авторизации test_checkAuthorizationWindowItems (не отлажено)" />
+    <MESSAGE value="Методы получения первой SessionID и авторизации вынесены в отдельный блок&#10;Созданы POJO-классы для упрощения десериализации, добавлена зависимость gson&#10;Метод получения списка типов документов test_getDocumentType() в работе" />
+    <option name="LAST_COMMIT_MESSAGE" value="Методы получения первой SessionID и авторизации вынесены в отдельный блок&#10;Созданы POJO-классы для упрощения десериализации, добавлена зависимость gson&#10;Метод получения списка типов документов test_getDocumentType() в работе" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/API_ARM.java</url>
-          <line>136</line>
+          <line>126</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/API_ARM.java</url>
-          <line>124</line>
+          <line>114</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/DocumentsType.java</url>
-          <line>95</line>
-          <option name="timeStamp" value="14" />
+          <line>71</line>
+          <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

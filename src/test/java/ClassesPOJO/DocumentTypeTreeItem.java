@@ -2,14 +2,14 @@ package ClassesPOJO;
 
 import java.util.Objects;
 
-public class DictionaryTreeItem {
+public class DocumentTypeTreeItem {
     public String title;
     public String type;
     public String childType;
     public String nodeRef;
     public String isLeaf;
 
-    public DictionaryTreeItem(String title) {
+    public DocumentTypeTreeItem(String title) {
         this.title = title;
     }
 
@@ -17,7 +17,7 @@ public class DictionaryTreeItem {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DictionaryTreeItem that = (DictionaryTreeItem) o;
+        DocumentTypeTreeItem that = (DocumentTypeTreeItem) o;
         return Objects.equals(title, that.title) &&
                 Objects.equals(type, that.type) &&
                 Objects.equals(childType, that.childType) &&
