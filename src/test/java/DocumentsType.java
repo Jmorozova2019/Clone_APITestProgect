@@ -3,6 +3,8 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 import io.restassured.response.Response;
+
+import static Utils.Utils.checkHttpResponce;
 import static io.restassured.RestAssured.given;
 
 import org.testng.annotations.Test;
@@ -29,18 +31,17 @@ public class DocumentsType {
         //Автроизоваться /share/page/dologin
         Map<String, String> params = ParametersForDocumentsTypes.getParametersForAuthorization();
         Response responseAuthorisation = API_ARM.authorization(sessionID, params);
-
-        if (!(responseAuthorisation.getStatusCode() >= 100 || responseAuthorisation.getStatusCode() < 400)){//Status.SUCCESS
-            System.out.println("Authorization error");
+        if (! checkHttpResponce(responseAuthorisation, "Ошибка запроса getDictionary?dicName=Вид документа"))
             return;
-        }
-        Map<String, String> allCookies = responseAuthorisation.getCookies();
+
+        /*Map<String, String> allCookies = responseAuthorisation.getCookies();
         System.out.println("----------Cookies--------------");
-        allCookies.forEach((a, b) ->  System.out.println(a + ": " + b));
+        allCookies.forEach((a, b) ->  System.out.println(a + ": " + b));*/
 
         //Получить данные для поиска видов документов GET /share/proxy/alfresco//lecm/dictionary/api/getDictionary?dicName=Вид документа
         String dicName = "Вид документа";
         String getDictionaryPath = "/share/proxy/alfresco//lecm/dictionary/api/getDictionary";
+
         Response responseGetDataForDocumentType = null;
         try {
             responseGetDataForDocumentType =
@@ -48,13 +49,16 @@ public class DocumentsType {
                     .sessionId(responseAuthorisation.getSessionId())//из авторизации
                     .cookie("alfLogin", "1570550237")
                     .cookie("alfUsername3", "Admin")
-                    .cookie("_alfTest", "_alfTest")
+                    //.cookie("_alfTest", "_alfTest")
                     .param("dicName", dicName)
                 .when().get(getDictionaryPath)
                 .then().extract().response();
         } catch(java.lang.AssertionError e){
             System.out.println("Get nodeRef: "+ e.getMessage());
         }
+
+        if (! checkHttpResponce(responseGetDataForDocumentType, "Ошибка запроса getDictionary?dicName=Вид документа"))
+            return;
 /*
         //if (responseGetDataForDocumentType.statusCode() == Status.SUCCESS)
         //Пока не получается добыть валидный объект(возвращается код 400), делаем получение данных из Json (исп. заглушка) - позже убрать
@@ -71,7 +75,7 @@ public class DocumentsType {
         //Есть много способов распарсить - см. https://ru.stackoverflow.com/questions/745094/%D0%9A%D0%B0%D0%BA-%D0%B8-%D1%87%D0%B5%D0%BC-%D0%BF%D0%B0%D1%80%D1%81%D0%B8%D1%82%D1%8C-json-%D0%BD%D0%B0-java
         Gson gsonDicNameData = new Gson();
         DocumentTypeData dicNameData = gsonDicNameData.fromJson(responseGetDataForDocumentType.jsonPath().toString(), DocumentTypeData.class);
-        System.out.println(dicNameData.nodeRef);
+        //System.out.println(dicNameData.nodeRef);
 
         //Отбираем данные для следующего запроса - перенесла в сам запрос  ---------------------
         //String nodeRef = dicNameData.nodeRef;
@@ -87,7 +91,7 @@ public class DocumentsType {
                         .param("nodeRef", nodeRef)
                     .when()
                         .get("/share/proxy/alfresco/lecm/dictionary/dictionary-tree")
-                    .then().extract().response();//!!!!!!!!!!
+                    .then().extract().response();
         } catch(java.lang.AssertionError e){
             System.out.println("Authorization: "+ e.getMessage());
         }
@@ -97,7 +101,7 @@ public class DocumentsType {
 
         treeItems.forEach(a ->  System.out.println(a.title));
         */
-        // Запрашиваем список типов документов POST /share/proxy/alfresco/lecm/search
+        // Запросить список типов документов POST /share/proxy/alfresco/lecm/search
         String documentTypeListPath = "/share/proxy/alfresco/lecm/search";
         Response responseDocumentTypeList = null;
         Map<String, String> paramsDocumentTypeList = ParametersForDocumentsTypes.getParametersForDocumentTypeList();
@@ -114,6 +118,9 @@ public class DocumentsType {
         } catch(java.lang.AssertionError e){
             System.out.println("Get documents types list error: "+ e.getMessage());
         }
+
+        if (! checkHttpResponce(responseGetDataForDocumentType, "Ошибка запроса списка видов документов /share/proxy/alfresco/lecm/search"))
+            return;
 
         Gson gsonDicTypeList = new Gson();
         DocumentTypeListData documentTypeListData = gsonDicTypeList.fromJson(responseDocumentTypeList.jsonPath().toString(), DocumentTypeListData.class);
