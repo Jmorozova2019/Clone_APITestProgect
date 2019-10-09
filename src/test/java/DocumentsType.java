@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 
 import static Utils.Utils.checkHttpResponce;
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.isNull;
 
 import org.testng.annotations.Test;
 
@@ -18,8 +19,6 @@ import ParametersForTests.ParametersForDocumentsTypes;
  * Класс для тестов работы с видами документов
  */
 public class DocumentsType {
-    public static final String BASE_URI = "http://213.128.208.33:8080";
-
     /**
      * Получение списка типов документов
      */
@@ -45,8 +44,8 @@ public class DocumentsType {
         Response responseGetDataForDocumentType = null;
         try {
             responseGetDataForDocumentType =
-                given().baseUri(BASE_URI)
-                    .sessionId(responseAuthorisation.getSessionId())//из авторизации
+                given().baseUri(API_ARM.BASE_URI)
+                    .sessionId(responseAuthorisation.getSessionId())
                     .cookie("alfLogin", "1570550237")
                     .cookie("alfUsername3", "Admin")
                     //.cookie("_alfTest", "_alfTest")
@@ -74,8 +73,12 @@ public class DocumentsType {
 */
         //Есть много способов распарсить - см. https://ru.stackoverflow.com/questions/745094/%D0%9A%D0%B0%D0%BA-%D0%B8-%D1%87%D0%B5%D0%BC-%D0%BF%D0%B0%D1%80%D1%81%D0%B8%D1%82%D1%8C-json-%D0%BD%D0%B0-java
         Gson gsonDicNameData = new Gson();
+        //копипаст
+        if (isNull(responseGetDataForDocumentType.jsonPath())){
+            System.out.println("Ответ на запрос списка типов документов не удалось преобразовать в jsonPath");
+            return;
+        }
         DocumentTypeData dicNameData = gsonDicNameData.fromJson(responseGetDataForDocumentType.jsonPath().toString(), DocumentTypeData.class);
-        //System.out.println(dicNameData.nodeRef);
 
         //Отбираем данные для следующего запроса - перенесла в сам запрос  ---------------------
         //String nodeRef = dicNameData.nodeRef;
@@ -86,7 +89,7 @@ public class DocumentsType {
         /*Response responseTree = null;
         try {
             responseTree =
-                    given().baseUri(BASE_URI)
+                    given().baseUri(API_ARM.BASE_URI)
                         .sessionId(sessionID)
                         .param("nodeRef", nodeRef)
                     .when()
@@ -107,7 +110,7 @@ public class DocumentsType {
         Map<String, String> paramsDocumentTypeList = ParametersForDocumentsTypes.getParametersForDocumentTypeList();
         try {
             responseDocumentTypeList =
-                    given().baseUri(BASE_URI)
+                    given().baseUri(API_ARM.BASE_URI)
                         .sessionId(sessionID)
                         .params(paramsDocumentTypeList)
                         .param("nodeRef", dicNameData.nodeRef)
@@ -119,10 +122,15 @@ public class DocumentsType {
             System.out.println("Get documents types list error: "+ e.getMessage());
         }
 
-        if (! checkHttpResponce(responseGetDataForDocumentType, "Ошибка запроса списка видов документов /share/proxy/alfresco/lecm/search"))
+        if (! checkHttpResponce(responseDocumentTypeList, "Ошибка запроса списка видов документов /share/proxy/alfresco/lecm/search"))
             return;
 
         Gson gsonDicTypeList = new Gson();
+        if (isNull(responseDocumentTypeList.jsonPath())){
+            System.out.println("Ответ на запрос списка типов документов не удалось преобразовать в jsonPath");
+            return;
+        }
+
         DocumentTypeListData documentTypeListData = gsonDicTypeList.fromJson(responseDocumentTypeList.jsonPath().toString(), DocumentTypeListData.class);
 
         ArrayList<DocumentTypeItem> documentTypeItems = documentTypeListData.getItems();
