@@ -49,6 +49,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.fatboyindustrial.gson-jodatime-serialisers/gson-jodatime-serialisers -->
+        <dependency>
+            <groupId>com.fatboyindustrial.gson-jodatime-serialisers</groupId>
+            <artifactId>gson-jodatime-serialisers</artifactId>
+            <version>1.8.0</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>

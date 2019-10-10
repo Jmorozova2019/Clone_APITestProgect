@@ -7,8 +7,8 @@ public class ParametersForDocumentsTypes {
 
     public static Map<String, String> getParametersForAuthorization() {
         Map<String, String> params = new HashMap<>();
-        params.put("success", "/share/page/");
-        params.put("failure", "/share/page/?error=true");
+        //params.put("success", "/share/page/");
+        //params.put("failure", "/share/page/?error=true");
         params.put("username", "Admin");
         params.put("password", "Kl%72Jrc12m!!");
 
@@ -33,25 +33,19 @@ public class ParametersForDocumentsTypes {
         return params;
     }
 
-    public static Map<String, String> getParametersForDocumentTypeList() {
-        //Три недостающих параметра нужно получить заранее - из запроса  GET /share/proxy/alfresco//lecm/dictionary/api/getDictionary?dicName=Вид документа
-        /*"parent": "workspace://SpacesStore/7d3073fa-8688-455a-8568-64884b2cdf80", -
-        "itemType": "lecm-doc-dic-dt:typeDictionary",
-        "searchConfig": "{\"formData\":\"{\\\"datatype\\\":\\\"lecm-doc-dic-dt:typeDictionary\\\"}\"}",
-        */
-
-        Map<String, String> params = new HashMap<>();
+    public static Map<String, Object> getParametersForDocumentTypeList() {
+        Map<String, Object> params = new HashMap<>();
         params.put("searchNodes", "");
-        params.put("maxResults", "20");//?
-        params.put("fields", "cm:name");
+        params.put("maxResults", 20);
+        params.put("fields", "cm_name");
         params.put("nameSubstituteStrings", "");
-        params.put("showInactive", "false");
-        params.put("startIndex", "0");
+        params.put("showInactive", false);
+        params.put("startIndex", 0);
         params.put("sort", "");
-        params.put("filter", "[]");
-        params.put("useChildQuery", "false");
-        params.put("useFilterByOrg", "false");
-        params.put("useOnlyInSameOrg", "false");
+        params.put("searchConfig", "");
+        params.put("useChildQuery", false);
+        params.put("useFilterByOrg", false);
+        params.put("useOnlyInSameOrg", false);
 
         return params;
     }

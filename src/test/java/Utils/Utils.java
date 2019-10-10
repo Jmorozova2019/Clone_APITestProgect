@@ -1,8 +1,8 @@
 package Utils;
 
+import static java.util.Objects.isNull;
 import io.restassured.response.Response;
 
-import static java.util.Objects.isNull;
 
 public class Utils {
     /**
@@ -23,4 +23,5 @@ public class Utils {
     String getRandomString(){
         return "Не реализовано";
     }
+
 }

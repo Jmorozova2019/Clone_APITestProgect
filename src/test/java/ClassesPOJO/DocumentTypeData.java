@@ -7,7 +7,7 @@ public class DocumentTypeData {
     String title;
     String type;
     public String nodeRef;
-    public String description;
+    String description;
     public String itemType;
     String attributeForShow;
     Boolean plane;

@@ -14,9 +14,6 @@ import ParametersForTests.ParametersForAutorisation;
  * Класс тестовых методов авторизации и переиспользуемых методов
  */
 public class API_ARM {
-    //protected static Logger logger = LogManager.getLogger(API_ARM.class.getName());
-    //logger.log(Level.WARNING);
-
     public static final String BASE_URI = "http://213.128.208.33:8080";
 
     ///*****************************************************************************************************************
@@ -55,7 +52,6 @@ public class API_ARM {
                     .sessionId(sessionID)
                     .params(paramsForAuthorisation)
                 .when()
-                    //.get("/share/page/")
                     .post("/share/page/dologin")
                 .then().extract().response();
         } catch (java.lang.AssertionError e) {

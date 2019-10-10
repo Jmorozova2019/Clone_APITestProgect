@@ -2,6 +2,10 @@ package ClassesPOJO;
 
 import java.util.ArrayList;
 
+
+/**
+ * POJO-класс для описания списка видов документов
+ */
 public class DocumentTypeListData {
     public Boolean versionable;
     public int totalRecords;
