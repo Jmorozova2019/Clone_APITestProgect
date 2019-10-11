@@ -1,21 +1,21 @@
-package ParametersForTests;
+/**
+ * DocumentKinds
+ */
+package parameters.request.referenceBooks;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ParametersForDocumentsTypes {
+public class DocumentKinds {
 
     public static Map<String, String> getParametersForAuthorization() {
         Map<String, String> params = new HashMap<>();
-        //params.put("success", "/share/page/");
-        //params.put("failure", "/share/page/?error=true");
         params.put("username", "Admin");
         params.put("password", "Kl%72Jrc12m!!");
 
         return params;
     }
 
-    //
     public static Map<String, String> getParametersForGetDocumentType() {
         Map<String, String> params = new HashMap<>();
         params.put("searchNodes", "");

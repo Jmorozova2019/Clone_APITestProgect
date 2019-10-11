@@ -3,8 +3,7 @@
 <suite name="TestsSuiteAutorisation" verbose="5">
     <test name="TestAutorisation">
         <classes>
-            <!--<class name="API_ARM"/>-->
-            <class name="DocumentsType"/>
+            <class name="runners.CommonRunner"/>
         </classes>
     </test>
 </suite>

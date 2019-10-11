@@ -1,14 +1,21 @@
-package Utils;
+package utils;
 
 import static java.util.Objects.isNull;
 import io.restassured.response.Response;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
+/**
+ * Класс содержит утилитные статические функции
+ */
 
 public class Utils {
+
     /**
      * Метод проверки статуса ответа на HTTP запрос
      * @param response Response
-     * @return ret boolean
+     * @return boolean
      * Если работать не будет, поменять индекс
      */
     //Найти пример использования Status.SUCCESS и переписать
@@ -20,8 +27,13 @@ public class Utils {
         return true;
     }
 
-    String getRandomString(){
-        return "Не реализовано";
+    /**
+     * Метод, возвращает текущее время. Предназначен для отладки.
+     * @return String
+     */
+    public static String nowTime(){
+        LocalTime time = LocalTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        return time.format(formatter);
     }
-
 }

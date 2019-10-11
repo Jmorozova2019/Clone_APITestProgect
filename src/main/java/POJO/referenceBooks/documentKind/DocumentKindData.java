@@ -1,9 +1,9 @@
-package ClassesPOJO;
+package POJO.referenceBooks.documentKind;
 
 /**
  * Класс для получения данных из ответа на запрос getDictionary?dicName=Вид документа
  */
-public class DocumentTypeData {
+public class DocumentKindData {
     String title;
     String type;
     public String nodeRef;

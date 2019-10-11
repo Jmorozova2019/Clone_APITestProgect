@@ -1,15 +1,15 @@
-package ClassesPOJO;
+package POJO.referenceBooks.documentKind;
 
 import java.util.Objects;
 
-public class DocumentTypeTreeItem {
+public class DocumentKindTreeItem {
     public String title;
     public String type;
     public String childType;
     public String nodeRef;
     public String isLeaf;
 
-    public DocumentTypeTreeItem(String title) {
+    public DocumentKindTreeItem(String title) {
         this.title = title;
     }
 
@@ -17,7 +17,7 @@ public class DocumentTypeTreeItem {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DocumentTypeTreeItem that = (DocumentTypeTreeItem) o;
+        DocumentKindTreeItem that = (DocumentKindTreeItem) o;
         return Objects.equals(title, that.title) &&
                 Objects.equals(type, that.type) &&
                 Objects.equals(childType, that.childType) &&

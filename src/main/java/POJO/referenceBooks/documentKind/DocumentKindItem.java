@@ -1,4 +1,4 @@
-package ClassesPOJO;
+package POJO.referenceBooks.documentKind;
 
 import org.joda.time.DateTime;
 
@@ -7,7 +7,7 @@ import org.joda.time.DateTime;
  * Геттеры только для тех полей, которые нужно запрашивать
  */
 
-public class DocumentTypeItem{
+public class DocumentKindItem {
     public String nodeRef;
     String type;
     String page;

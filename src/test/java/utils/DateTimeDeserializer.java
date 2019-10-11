@@ -1,4 +1,4 @@
-package Utils;
+package utils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -7,6 +7,9 @@ import org.joda.time.DateTime;
 
 import java.lang.reflect.Type;
 
+/**
+ * Класс с методом десериализации json в объекты, содержащие поля типа DateTime
+ */
 public class DateTimeDeserializer implements JsonDeserializer<DateTime> {
     public DateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         return new DateTime(json.getAsJsonPrimitive().getAsString());

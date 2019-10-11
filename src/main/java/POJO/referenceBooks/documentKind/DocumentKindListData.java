@@ -1,4 +1,4 @@
-package ClassesPOJO;
+package POJO.referenceBooks.documentKind;
 
 import java.util.ArrayList;
 
@@ -6,18 +6,18 @@ import java.util.ArrayList;
 /**
  * POJO-класс для описания списка видов документов
  */
-public class DocumentTypeListData {
+public class DocumentKindListData {
     public Boolean versionable;
     public int totalRecords;
     public int startIndex;
     public Metadata metadata;
-    public ArrayList<DocumentTypeItem> items;
+    public ArrayList<DocumentKindItem> items;
 
-    public ArrayList<DocumentTypeItem> getItems() {
+    public ArrayList<DocumentKindItem> getItems() {
         return items;
     }
 
-    public void setItems(ArrayList<DocumentTypeItem> items) {
+    public void setItems(ArrayList<DocumentKindItem> items) {
         this.items = items;
     }
 }
