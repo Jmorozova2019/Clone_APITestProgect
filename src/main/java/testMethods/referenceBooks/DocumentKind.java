@@ -16,20 +16,24 @@ import static java.util.Objects.isNull;
 import POJO.referenceBooks.documentKind.DocumentKindData;
 import POJO.referenceBooks.documentKind.DocumentKindItem;
 import POJO.referenceBooks.documentKind.DocumentKindListData;
+
+import testMethods.*;
+import testMethods.authorization.Authorization;
+
 import static parameters.request.referenceBooks.DocumentKinds.getParametersForDocumentTypeList;
-import static testMethods.authorization.Authorization.authorization;
 
-public class DocumentKind {
+public class DocumentKind extends TestBaseMethods {
 
-    public static List<String> LOCAL_URL = asList("/share/page/proxy/alfresco/lecm/dictionary/api/getDictionary",
+    public List<String> LOCAL_URL = asList("/share/page/proxy/alfresco/lecm/dictionary/api/getDictionary",
                                                   "/share/proxy/alfresco/lecm/search");
     /**
      * Получение списка типов документов
      */
-    public static DocumentKindListData getDocumentTypeList(String BASE_URI){
-        Response responseAuthorisation = authorization(BASE_URI, true);
-        //if (! checkHttpResponce(responseAuthorisation, "Ошибка авторизации"))
-        //    return null;
+    public DocumentKindListData getDocumentTypeList(String BASE_URI){
+        Authorization auth = new Authorization();
+        Response responseAuthorization = auth.authorization(BASE_URI, true);
+        if (! auth.validateHttpResponse(responseAuthorization))
+            return null;
 
         //Получить данные для поиска видов документов GET /share/proxy/alfresco//lecm/dictionary/api/getDictionary?dicName=Вид документа
         String dicName = "Вид документа";//желательно вынести
@@ -37,16 +41,17 @@ public class DocumentKind {
         try {
             responseGetDataForDocumentType =
                 given().baseUri(BASE_URI)
-                    .sessionId(responseAuthorisation.sessionId())
+                    .sessionId(responseAuthorization.sessionId())
                     .param("dicName", dicName)
                 .when().get(LOCAL_URL.get(0))
                 .then().extract().response();
         } catch(java.lang.AssertionError e){
             System.out.println("Get nodeRef: " + e.getMessage());
+            return null;
         }
 
-        //if (! checkHttpResponce(responseGetDataForDocumentType, "Ошибка запроса getDictionary?dicName=Вид документа"))
-        //    return null;
+        if (! utils.Utils.checkHttpResponce(responseGetDataForDocumentType))
+            return null;
 
         Gson gsonDicNameData = new Gson();
         if (isNull(responseGetDataForDocumentType.getBody())){
@@ -69,19 +74,19 @@ public class DocumentKind {
         Response responseDocumentTypeList = null;
         try {
             responseDocumentTypeList =
-                    given().baseUri(BASE_URI)
-                        .sessionId(responseAuthorisation.sessionId())
-                        .contentType("application/json;charset=UTF-8")
-                        .body(gson.toJson(paramsBody))
-                    .when()
-                        .post(LOCAL_URL.get(1))
-                    .then().extract().response();
+                given().baseUri(BASE_URI)
+                    .sessionId(responseAuthorization.sessionId())
+                    .contentType("application/json;charset=UTF-8")
+                    .body(gson.toJson(paramsBody))
+                .when()
+                    .post(LOCAL_URL.get(1))
+                .then().extract().response();
         } catch(java.lang.AssertionError e){
             System.out.println("Get documents types list error: "+ e.getMessage());
         }
 
-        //if (! checkHttpResponce(responseDocumentTypeList, "Ошибка запроса списка видов документов " + LOCAL_URL.get(1)))
-         //   return null;
+        if (! utils.Utils.checkHttpResponce(responseDocumentTypeList))
+           return null;
 
         Gson gsonDicTypeList = Converters.registerDateTime(new GsonBuilder()).create();
         if (isNull(responseDocumentTypeList.getBody())){
@@ -96,5 +101,4 @@ public class DocumentKind {
 
         return documentKindListData;
     }
-
 }

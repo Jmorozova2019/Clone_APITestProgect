@@ -16,12 +16,11 @@ public class Utils {
      * Метод проверки статуса ответа на HTTP запрос
      * @param response Response
      * @return boolean
-     * Если работать не будет, поменять индекс
+     * В классах тесторвых методов является дефолтной реализацией валидации
+     * Если вывод названия функции будет работать неправильно, поменять индекс
      */
-    //Найти пример использования Status.SUCCESS и переписать
-    public static boolean checkHttpResponce(Response response, String message){
+    public static boolean checkHttpResponce(Response response){
         if ( isNull(response) || (!(response.getStatusCode() >= 100 || response.getStatusCode() < 400))){
-            System.out.println(message + ", метод вызван из " + Thread.currentThread().getStackTrace()[2].getMethodName());
             return false;
         }
         return true;

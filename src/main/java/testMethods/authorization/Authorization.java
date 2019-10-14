@@ -3,6 +3,9 @@ package testMethods.authorization;
 import static java.util.Objects.isNull;
 
 import io.restassured.response.Response;
+import testMethods.TestBaseMethods;
+import utils.Utils;
+
 import static io.restassured.RestAssured.given;
 import static testMethods.common.Common.getSessionID;
 
@@ -11,11 +14,25 @@ import java.util.Map;
 /**
  * Класс с методами авторизации и полями, которые к ней относятся
  */
+public class Authorization extends TestBaseMethods {
 
-public class Authorization {
     public static String LOCAL_URL = "/share/page/dologin";
 
-    public static Response authorization(String BASE_URI, Map<String, String> params) {
+
+    public boolean validateHttpResponse (Response response){
+        if (! Utils.checkHttpResponce(response)){
+            return false;
+        }
+
+        Map<String, String> allCookies = response.getCookies();
+        if(!isNull(allCookies) && allCookies.containsKey("alfLogin") && allCookies.containsKey("alfUsername3")){
+            return true;
+        }
+
+        return false;
+    }
+
+    public Response authorization(String BASE_URI, Map<String, String> params) {
         String sessionID = getSessionID(BASE_URI);
         if(isNull(sessionID))
         {
@@ -39,7 +56,7 @@ public class Authorization {
         return response;
     }
 
-    public static Response authorization(String BASE_URI, boolean isValid) {
+    public Response authorization(String BASE_URI, boolean isValid) {
         Map<String, String> params = null;
         if (isValid){
             params = parameters.request.authorization.Authorization.getValidParameters();
@@ -51,7 +68,7 @@ public class Authorization {
     }
 
 
-    public static Response exit(String BASE_URI) {
+    public Response exit(String BASE_URI) {
         Map<String, String> params = parameters.request.authorization.Authorization.getValidParameters();
 
         Response response = authorization(BASE_URI, params);
